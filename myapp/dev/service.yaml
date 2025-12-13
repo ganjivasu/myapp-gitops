@@ -9,6 +9,5 @@ spec:
   ports:
     - protocol: TCP
       port: 8080          # port inside cluster
-      targetPort: 8080  # port your app listens on
-      nodePort: 30080   # port to access externally
-  type: NodePort
+      targetPort: 8080  # port your app listens on   
+  type: LoadBalancer
