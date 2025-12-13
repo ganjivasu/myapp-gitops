@@ -8,6 +8,6 @@ spec:
     app: myapp
   ports:
     - protocol: TCP
-      port: 8080          # port inside cluster
-      targetPort: 8080  # port your app listens on   
+      port: 9000          # port inside cluster
+      targetPort: 9000  # port your app listens on   
   type: LoadBalancer
