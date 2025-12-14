@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myapp
-  namespace: pt
+  namespace: dev
 spec:
   replicas: 2
   strategy:
@@ -21,7 +21,7 @@ spec:
       containers:
       - name: myapp
         # This will be replaced by your CI pipeline IMAGE variable
-        image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp:PLACEHOLDER_SHA
+        image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp:22d734055fb3b91d1b1767b3720e3d82f1d3e98a
         ports:
         - containerPort: 9000
         readinessProbe:
