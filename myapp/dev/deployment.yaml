@@ -5,6 +5,11 @@ metadata:
   namespace: dev
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: myapp
@@ -15,6 +20,19 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp:e0c12605f49bc5a71d7c2a8b3bda73d650ace62c
+        # This will be replaced by your CI pipeline IMAGE variable
+        image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp:PLACEHOLDER_SHA
         ports:
         - containerPort: 9000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9000
+          initialDelaySeconds: 30
+          periodSeconds: 10
