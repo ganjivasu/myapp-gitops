@@ -5,7 +5,7 @@ metadata:
   namespace: dev
   annotations:
     argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,HookFailed
 spec:
   backoffLimit: 0
   template:
@@ -21,16 +21,8 @@ spec:
             echo "Waiting for service DNS..."
             for i in $(seq 1 30); do
               nslookup myapp-service.dev.svc.cluster.local && break
-              echo "DNS not ready yet..."
               sleep 5
             done
 
-            echo "Waiting for app health..."
-            for i in $(seq 1 30); do
-              curl -f http://myapp-service.dev.svc.cluster.local:9000/health && exit 0
-              echo "App not ready yet..."
-              sleep 5
-            done
-
-            echo "Smoke test failed"
-            exit 1
+            echo "Running smoke tests..."
+            curl -f http://myapp-service.dev.svc.cluster.local:9000/health
