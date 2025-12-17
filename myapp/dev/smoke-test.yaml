@@ -25,4 +25,4 @@ spec:
             done
 
             echo "Running smoke tests..."
-            curl -f http://myapp-service.dev.svc.cluster.local:9000/health
+            curl http://a68aeb22fe1ee436787f2a5f9027cac1-85492580.us-east-1.elb.amazonaws.com:9000/health
