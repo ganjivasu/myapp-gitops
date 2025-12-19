@@ -21,7 +21,7 @@ spec:
       containers:
       - name: myapp
         # This will be replaced by your CI pipeline IMAGE variable
-        image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp@sha256:cf0d2e8e3c41437ffbe84f77240cfa6c5199af4fd914247e61b4ba4e9c6c20dd
+        image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp@sha256:5602d5e51cb32e533a9a11295b347932a973b2f3ad35102c68b56e29e5a00c07
         ports:
         - containerPort: 9000
         readinessProbe:
