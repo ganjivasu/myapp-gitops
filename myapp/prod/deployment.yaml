@@ -1,15 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: myapp
   namespace: prod
 spec:
-  replicas: 2
+  replicas: 4
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
+    canary:
+      steps:
+      - setWeight: 10
+      - pause: {duration: 2m}
+      - setWeight: 30
+      - pause: {duration: 2m}
+      - setWeight: 60
+      - pause: {duration: 2m}
+      - setWeight: 100
   selector:
     matchLabels:
       app: myapp
@@ -20,7 +25,6 @@ spec:
     spec:
       containers:
       - name: myapp
-        # This will be replaced by your CI pipeline IMAGE variable
         image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp@sha256:5602d5e51cb32e533a9a11295b347932a973b2f3ad35102c68b56e29e5a00c07
         ports:
         - containerPort: 9000
