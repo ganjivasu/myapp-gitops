@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp@sha256:5602d5e51cb32e533a9a11295b347932a973b2f3ad35102c68b56e29e5a00c07
+        image: 
         ports:
         - containerPort: 9000
         readinessProbe:
