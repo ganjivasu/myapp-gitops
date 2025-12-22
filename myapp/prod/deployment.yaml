@@ -4,6 +4,7 @@ metadata:
   name: myapp
   namespace: prod
 spec:
+  progressDeadlineSeconds: 600
   replicas: 4
   strategy:
     canary:
