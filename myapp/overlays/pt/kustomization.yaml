@@ -9,5 +9,6 @@ images:
     newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp
     newTag: sha256-pt123
 
-patchesStrategicMerge:
-  - replicas.yaml
+patches:
+  - path: replicas.yaml
+  - path: env.yaml

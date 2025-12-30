@@ -8,9 +8,17 @@ spec:
     canary:
       steps:
       - setWeight: 10
-      - pause: { duration: 2m }
-      - setWeight: 50
-      - pause: { duration: 2m }
+      - analysis:
+          templates:
+          - templateName: myapp-success-rate
+      - setWeight: 30
+      - analysis:
+          templates:
+          - templateName: myapp-success-rate
+      - setWeight: 60
+      - analysis:
+          templates:
+          - templateName: myapp-success-rate
       - setWeight: 100
   selector:
     matchLabels:

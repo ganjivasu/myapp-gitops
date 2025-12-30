@@ -8,5 +8,8 @@ images:
   - name: myapp
     newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp
     newTag: sha256-dev123
-patchesStrategicMerge:
-  - replicas.yaml
+
+# Environment-specific tuning
+patches:
+  - path: replicas.yaml
+  - path: env.yaml
