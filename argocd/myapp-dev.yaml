@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/ganjivasu/myapp-gitops
     targetRevision: main
-    path: myapp/dev
+    path: myapp/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
