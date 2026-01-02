@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: dev
 resources:
   - ../../base
+  - analysis-template.yaml
 images:
   - name: myapp
     newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp

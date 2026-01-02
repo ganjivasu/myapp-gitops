@@ -2,23 +2,34 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: myapp
+  annotations:
+    argocd.argoproj.io/managed-by: argocd
 spec:
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 5
   replicas: 4
   strategy:
     canary:
       steps:
       - setWeight: 10
+      - pause:
+          duration: 2m
       - analysis:
           templates:
           - templateName: myapp-success-rate
       - setWeight: 30
+      - pause:
+          duration: 2m
       - analysis:
           templates:
           - templateName: myapp-success-rate
       - setWeight: 60
+      - pause:
+          duration: 2m
       - analysis:
           templates:
           - templateName: myapp-success-rate
+          - templateName: myapp-k6
       - setWeight: 100
   selector:
     matchLabels:

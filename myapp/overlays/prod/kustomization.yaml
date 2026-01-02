@@ -5,6 +5,7 @@ namespace: prod
 resources:
   - ../../base
   - analysis-template.yaml
+  - analysis-template-k6.yaml
 
 images:
   - name: myapp

@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: myapp-k6
+spec:
+  metrics:
+  - name: k6-error-rate
+    interval: 30s
+    count: 3
+    successCondition: result < 0.05
+    failureCondition: result >= 0.10
+    provider:
+      prometheus:
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          sum(rate(k6_http_req_failed[1m]))
+
+  - name: k6-latency-p95
+    interval: 30s
+    count: 3
+    successCondition: result < 500
+    failureCondition: result >= 800
+    provider:
+      prometheus:
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          histogram_quantile(
+            0.95,
+            sum(rate(k6_http_req_duration_bucket[1m])) by (le)
+          )

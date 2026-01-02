@@ -6,12 +6,12 @@ spec:
   metrics:
   - name: success-rate
     interval: 30s
-    count: 3
-    successCondition: result >= 0.99
-    failureCondition: result < 0.95
+    count: 4
+    successCondition: result[0] >= 0.97
+    failureCondition: result[0] < 0.95
     provider:
       prometheus:
-        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
         query: |
           sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
           /
