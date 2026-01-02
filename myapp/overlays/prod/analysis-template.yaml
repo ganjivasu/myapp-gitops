@@ -10,7 +10,7 @@ spec:
     failureCondition: result < 0.95
     provider:
       prometheus:
-        address: http://prometheus-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
         query: |
           sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
           /
