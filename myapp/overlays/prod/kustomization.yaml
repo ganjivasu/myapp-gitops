@@ -1,28 +1,23 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: prod
-
 resources:
   - ../../base
   - analysis-template.yaml
   - analysis-template-k6.yaml
-
 images:
   - name: myapp
     newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp
-    digest: sha256:2f6b8cfbcac0d07830b027750b8dc3b95197c29a7da37b8688f1558ab0716c9a
-
+    digest: sha256:97b2b7119c64f9f82977abff8ab1f74b667084c4afb4e0998c22e315e4cebc72
 patches:
   - target:
       kind: Rollout
       name: myapp
     path: env.yaml
-
   - target:
       kind: Rollout
       name: myapp
     path: replicas.yaml
-
   - target:
       kind: Deployment
       name: myapp
