@@ -11,7 +11,7 @@ spec:
     failureCondition: result[0] >= 0.10
     provider:
       prometheus:
-        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
         query: |
           sum(rate(k6_error_rate[1m]))
 
@@ -22,9 +22,9 @@ spec:
     failureCondition: result[0] >= 800
     provider:
       prometheus:
-        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
         query: |
           histogram_quantile(
             0.95,
-            sum(rate(k6_latency_p95_bucket[1m])) by (le)
+            sum(rate(k6_http_req_duration_bucket[1m])) by (le)
           )
