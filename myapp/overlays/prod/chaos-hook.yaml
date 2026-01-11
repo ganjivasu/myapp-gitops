@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: chaos-trigger
+  annotations:
+    argocd.argoproj.io/hook: Sync
+spec:
+  template:
+    spec:
+      containers:
+      - name: chaos
+        image: litmuschaos/litmusctl
+        command:
+        - sh
+        - -c
+        - |
+          kubectl apply -f chaos-pod-delete.yaml
+      restartPolicy: Never

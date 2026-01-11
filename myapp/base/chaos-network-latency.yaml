@@ -1,0 +1,20 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: myapp-canary-latency
+spec:
+  appinfo:
+    appns: prod
+    applabel: "app=myapp"
+    appkind: rollout
+  engineState: active
+  chaosServiceAccount: litmus-admin
+  experiments:
+  - name: pod-network-latency
+    spec:
+      components:
+        env:
+        - name: NETWORK_LATENCY
+          value: "200"   # ms
+        - name: TOTAL_CHAOS_DURATION
+          value: "120"

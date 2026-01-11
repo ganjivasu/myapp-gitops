@@ -2,38 +2,41 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: myapp
-  annotations:
-    argocd.argoproj.io/managed-by: argocd
 spec:
-  progressDeadlineSeconds: 600
-  revisionHistoryLimit: 5
   replicas: 4
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 600
+
   strategy:
     canary:
       steps:
       - setWeight: 10
-      - pause:
-          duration: 2m
+      - pause: { duration: 2m }
+
       - analysis:
           templates:
-          - templateName: myapp-success-rate
+          - templateName: myapp-canary-analysis
+
       - setWeight: 30
-      - pause:
-          duration: 2m
+      - pause: { duration: 2m }
+
       - analysis:
           templates:
-          - templateName: myapp-success-rate
+          - templateName: myapp-chaos-health
+
       - setWeight: 60
-      - pause:
-          duration: 2m
+      - pause: { duration: 2m }
+
       - analysis:
           templates:
-          - templateName: myapp-success-rate
-          - templateName: myapp-k6
+          - templateName: myapp-canary-analysis
+
       - setWeight: 100
+
   selector:
     matchLabels:
       app: myapp
+
   template:
     metadata:
       labels:
@@ -48,11 +51,7 @@ spec:
           httpGet:
             path: /health
             port: 9000
-          initialDelaySeconds: 10
-          periodSeconds: 5
         livenessProbe:
           httpGet:
             path: /health
             port: 9000
-          initialDelaySeconds: 30
-          periodSeconds: 10

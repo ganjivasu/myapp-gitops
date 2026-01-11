@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  service.slack: |
+    token: $slack-webhook:webhook-url
+
+  template.rollout-failed: |
+    message: |
+      :x: *Rollout Failed*
+      App: {{.app.metadata.name}}
+      Namespace: {{.app.metadata.namespace}}
+      Status: {{.app.status.health.status}}
+
+  trigger.on-rollout-failed: |
+    - description: Rollout is degraded
+      when: app.status.health.status == 'Degraded'
+      send:
+      - rollout-failed

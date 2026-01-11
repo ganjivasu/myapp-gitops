@@ -1,0 +1,22 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: myapp-canary-pod-delete
+spec:
+  appinfo:
+    appns: prod
+    applabel: "app=myapp"
+    appkind: rollout
+  engineState: active
+  chaosServiceAccount: litmus-admin
+  experiments:
+  - name: pod-delete
+    spec:
+      components:
+        env:
+        - name: TOTAL_CHAOS_DURATION
+          value: "60"
+        - name: CHAOS_INTERVAL
+          value: "20"
+        - name: FORCE
+          value: "false"

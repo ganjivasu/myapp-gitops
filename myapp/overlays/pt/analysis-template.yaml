@@ -1,18 +1,53 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
-  name: myapp-success-rate
+  name: myapp-canary-analysis
 spec:
   metrics:
+
+  # -----------------------------
+  # Application Success Rate
+  # -----------------------------
   - name: success-rate
     interval: 30s
     count: 3
-    successCondition: result[0] >= 0.95
-    failureCondition: result[0] < 0.90
+    successCondition: result >= 0.99
+    failureCondition: result < 0.95
     provider:
       prometheus:
-        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
         query: |
           sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
           /
           sum(rate(http_requests_total{app="myapp"}[1m]))
+
+  # -----------------------------
+  # k6 Error Rate
+  # -----------------------------
+  - name: k6-error-rate
+    interval: 30s
+    count: 3
+    successCondition: result < 0.05
+    failureCondition: result >= 0.10
+    provider:
+      prometheus:
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          avg(rate(k6_error_rate[1m]))
+
+  # -----------------------------
+  # k6 Latency p95
+  # -----------------------------
+  - name: k6-latency-p95
+    interval: 30s
+    count: 3
+    successCondition: result < 500
+    failureCondition: result >= 800
+    provider:
+      prometheus:
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          histogram_quantile(
+            0.95,
+            sum(rate(k6_latency_p95_bucket[1m])) by (le)
+          )

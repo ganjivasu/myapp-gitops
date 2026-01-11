@@ -1,17 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: myapp-prod
+  name: myapp-platform
   namespace: argocd
-  annotations:
-    notifications.argoproj.io/subscribe.on-rollout-failed.slack: ""
 spec:
   project: default
   source:
     repoURL: https://github.com/ganjivasu/myapp-gitops
     targetRevision: main
-    path: myapp/overlays/prod
+    path: argocd
   destination:
     server: https://kubernetes.default.svc
-    namespace: prod
-  syncPolicy: {}
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

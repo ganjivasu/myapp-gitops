@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-myapp-canary
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  myapp-canary.json: |
+    {
+      "title": "MyApp Canary Rollout",
+      "panels": [
+        {
+          "title": "HTTP Success Rate",
+          "type": "stat",
+          "targets": [{
+            "expr": "sum(rate(http_requests_total{app=\"myapp\",status=~\"2..\"}[1m])) / sum(rate(http_requests_total{app=\"myapp\"}[1m]))"
+          }]
+        },
+        {
+          "title": "k6 Error Rate",
+          "type": "graph",
+          "targets": [{
+            "expr": "rate(k6_http_req_failed[1m])"
+          }]
+        },
+        {
+          "title": "k6 Latency p95",
+          "type": "graph",
+          "targets": [{
+            "expr": "histogram_quantile(0.95, sum(rate(k6_http_req_duration_bucket[1m])) by (le))"
+          }]
+        }
+      ]
+    }
