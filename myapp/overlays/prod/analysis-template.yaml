@@ -5,9 +5,6 @@ metadata:
 spec:
   metrics:
 
-  # -----------------------------
-  # Application Success Rate
-  # -----------------------------
   - name: success-rate
     interval: 30s
     count: 3
@@ -17,13 +14,12 @@ spec:
       prometheus:
         address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
         query: |
-          sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
-          /
-          sum(rate(http_requests_total{app="myapp"}[1m]))
+          scalar(
+            sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
+            /
+            sum(rate(http_requests_total{app="myapp"}[1m]))
+          )
 
-  # -----------------------------
-  # k6 Error Rate
-  # -----------------------------
   - name: k6-error-rate
     interval: 30s
     count: 3
@@ -33,11 +29,8 @@ spec:
       prometheus:
         address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
         query: |
-          avg(rate(k6_error_rate[1m]))
+          scalar(avg(rate(k6_error_rate[1m])))
 
-  # -----------------------------
-  # k6 Latency p95
-  # -----------------------------
   - name: k6-latency-p95
     interval: 30s
     count: 3
@@ -47,7 +40,9 @@ spec:
       prometheus:
         address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
         query: |
-          histogram_quantile(
-            0.95,
-            sum(rate(k6_latency_p95_bucket[1m])) by (le)
+          scalar(
+            histogram_quantile(
+              0.95,
+              sum(rate(k6_latency_p95_bucket[1m])) by (le)
+            )
           )
