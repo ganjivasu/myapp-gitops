@@ -18,7 +18,7 @@ spec:
       prometheus:
         address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
         query: |
-          (
+          scalar(
             sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
           )
           /
