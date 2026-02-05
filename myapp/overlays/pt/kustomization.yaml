@@ -6,8 +6,8 @@ resources:
   - analysis-template.yaml
 images:
   - name: myapp
-    newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp
-    digest: sha256:7dc4e721289d7ca37f3ca7b40af986ec13801c5049e98b5d4bb05fe8c69bd3c0
+    newName: sha256:ae44ee29a103c823ef70f0e0358b03126e1eb4da7ae00d7c798157dcf8d6cc8c
+    digest: sha256:ae44ee29a103c823ef70f0e0358b03126e1eb4da7ae00d7c798157dcf8d6cc8c
 patches:
   - path: replicas.yaml
   - path: env.yaml
