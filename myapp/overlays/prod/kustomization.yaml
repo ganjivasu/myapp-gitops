@@ -8,8 +8,8 @@ resources:
   - analysis-template-chaos.yaml
 images:
   - name: myapp
-    newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp
-    digest: sha256:7dc4e721289d7ca37f3ca7b40af986ec13801c5049e98b5d4bb05fe8c69bd3c0
+    newName: sha256:20d406e513ab3425b3fba9417b4d1665e51ce9b4cdf43dc3ffa8aa2c175c4d35
+    digest: sha256:20d406e513ab3425b3fba9417b4d1665e51ce9b4cdf43dc3ffa8aa2c175c4d35
 patches:
   - target:
       kind: Rollout
