@@ -7,7 +7,7 @@ resources:
 images:
   - name: myapp
     newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp
-    digest: sha256:af265d061ae3fe4928f9fb69611d0d063facffc8daa5a1421a69b2721667466d
+    digest: sha256:ae44ee29a103c823ef70f0e0358b03126e1eb4da7ae00d7c798157dcf8d6cc8c
 # Environment-specific tuning
 patches:
   - path: replicas.yaml
