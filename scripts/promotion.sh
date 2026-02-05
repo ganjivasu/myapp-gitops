@@ -23,7 +23,7 @@ fi
 NAME=$(echo "$IMAGE" | cut -d@ -f1)
 DIGEST=$(echo "$IMAGE" | cut -d@ -f2)
 
-OVERLAY_DIR="gitops/myapp/overlays/$ENV"
+OVERLAY_DIR="myapp/overlays/$ENV"
 
 if [[ ! -d "$OVERLAY_DIR" ]]; then
   echo "❌ Overlay directory not found: $OVERLAY_DIR"
