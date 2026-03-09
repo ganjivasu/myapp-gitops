@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: myapp
+spec:
+  replicas: 4
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 600
+
+  strategy:
+    canary:
+      trafficRouting:
+        istio:
+          virtualService:
+            name: myapp-vs
+      steps:
+      - setWeight: 10
+      - pause: { duration: 2m }
+      - analysis:
+          templates:
+          - templateName: myapp-canary-analysis
+      - setWeight: 30
+      - pause: { duration: 2m }
+      - analysis:
+          templates:
+          - templateName: myapp-chaos-health
+      - setWeight: 60
+      - pause: { duration: 2m }
+      - analysis:
+          templates:
+          - templateName: myapp-canary-analysis
+      - setWeight: 100
+
+  selector:
+    matchLabels:
+      app: myapp
+
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: canary    # important: Istio subset label
+    spec:
+      containers:
+      - name: myapp
+        image: myapp
+        ports:
+        - containerPort: 9000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9000
