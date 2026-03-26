@@ -11,7 +11,6 @@ fi
 
 # Use argument image if provided
 if [[ -z "$IMAGE" ]]; then
-  # Fallback for backward compatibility
   if [[ ! -f immutable_image.txt ]]; then
     echo "❌ immutable_image.txt not found and no image provided"
     exit 1
@@ -22,7 +21,7 @@ fi
 # Split image into name + digest
 NAME=$(echo "$IMAGE" | cut -d@ -f1)
 DIGEST=$(echo "$IMAGE" | cut -d@ -f2)
-export DIGEST
+export DIGEST  # Make available for yq
 
 OVERLAY_DIR="myapp/overlays/$ENV"
 
@@ -37,19 +36,20 @@ git config user.name "ci-bot"
 git config user.email "ci-bot@example.com"
 
 # Update kustomization.yaml using yq
-#yq -i "
-#.images[0].newName = \"$NAME\" |
-#.images[0].digest  = \"$DIGEST\"
-#" kustomization.yaml
-
 yq -i '.images[0].newName = "281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp" | .images[0].digest = env(DIGEST)' kustomization.yaml
 
 # Commit only if changes exist
-git diff --quiet && {
+if git diff --quiet; then
   echo "ℹ️ No changes to commit for $ENV"
   exit 0
-}
+fi
 
 git add kustomization.yaml
 git commit -m "Promote $IMAGE to $ENV"
-git push origin main
+
+# Only push if there are commits (safest in CI)
+if ! git diff --cached --quiet; then
+  git push origin main
+else
+  echo "ℹ️ No changes to push for $ENV"
+fi
