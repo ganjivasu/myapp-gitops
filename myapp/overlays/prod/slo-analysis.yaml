@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: slo-check
+spec:
+  args:
+  - name: service-name
+
+  metrics:
+  # =====================================================
+  # Availability SLO (99%)
+  # =====================================================
+  - name: availability
+    interval: 30s
+    count: 3
+    inconclusiveLimit: 1
+    failureLimit: 1
+    successCondition: result[0] >= 0.99
+    failureCondition: result[0] < 0.95
+    provider:
+      prometheus:
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          sum(rate(http_requests_total{app="{{args.service-name}}",status!~"5.."}[1m]))
+          /
+          clamp_min(sum(rate(http_requests_total{app="{{args.service-name}}"}[1m])), 1)
+
+  # =====================================================
+  # Latency SLO (p95 < 500ms)
+  # =====================================================
+  - name: latency-p95
+    interval: 30s
+    count: 3
+    failureLimit: 1
+    successCondition: result[0] < 0.5
+    failureCondition: result[0] >= 0.8
+    provider:
+      prometheus:
+        address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        query: |
+          histogram_quantile(
+            0.95,
+            sum(rate(http_request_duration_seconds_bucket{app="{{args.service-name}}"}[1m])) by (le)
+          )

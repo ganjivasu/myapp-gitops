@@ -4,13 +4,26 @@ metadata:
   name: myapp
 spec:
   replicas: 4
+  minReadySeconds: 10
   revisionHistoryLimit: 5
   progressDeadlineSeconds: 600
+  progressDeadlineAbort: true
 
   strategy:
     canary:
-      canaryService: myapp-canary
-      stableService: myapp-stable
+      maxUnavailable: 1
+      abortScaleDownDelaySeconds: 30
+
+      canaryService: myapp
+      stableService: myapp
+
+      stableMetadata:
+        labels:
+          version: stable
+
+      canaryMetadata:
+        labels:
+          version: canary
 
       trafficRouting:
         istio:
@@ -29,21 +42,30 @@ spec:
 
       - analysis:
           templates:
-          - templateName: myapp-canary-analysis
+          - templateName: myapp-analysis
+            args:
+            - name: service-name
+              value: myapp
 
       - setWeight: 30
       - pause: { duration: 2m }
 
       - analysis:
           templates:
-          - templateName: myapp-chaos-health
+          - templateName: myapp-analysis
+            args:
+            - name: service-name
+              value: myapp
 
       - setWeight: 60
       - pause: { duration: 2m }
 
       - analysis:
           templates:
-          - templateName: myapp-canary-analysis
+          - templateName: myapp-analysis
+            args:
+            - name: service-name
+              value: myapp
 
       - setWeight: 100
 
@@ -59,7 +81,7 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: myapp:v2
+        image: myapp
         ports:
         - containerPort: 9000
 

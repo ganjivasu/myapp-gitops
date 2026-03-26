@@ -2,20 +2,21 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: myapp-vs
+  namespace: prod
 spec:
   hosts:
-  - myapp
+  - "*"
   gateways:
-  - mesh
+  - myapp-gateway
 
   http:
   - name: primary
     route:
     - destination:
-        host: myapp-stable
+        host: myapp
         subset: stable
       weight: 100
     - destination:
-        host: myapp-canary
+        host: myapp
         subset: canary
       weight: 0

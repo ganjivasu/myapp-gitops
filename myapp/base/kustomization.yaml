@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
   - deployment.yaml
-  - service.yaml
-  - rollout.yaml
+  - services.yaml
+  - rollout-istio.yaml

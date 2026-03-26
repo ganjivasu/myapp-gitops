@@ -13,6 +13,10 @@ spec:
       prometheus:
         address: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local
         query: |
-          sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
+          scalar(
+            sum(rate(http_requests_total{app="myapp",status=~"2.."}[1m]))
+          )
           /
-          sum(rate(http_requests_total{app="myapp"}[1m]))
+          scalar(
+            sum(rate(http_requests_total{app="myapp"}[1m]))
+          ) 
