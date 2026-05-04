@@ -2,12 +2,28 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: myapp
+  namespace: prod
 spec:
   replicas: 4
   minReadySeconds: 10
   revisionHistoryLimit: 5
   progressDeadlineSeconds: 600
   progressDeadlineAbort: true
+
+  selector:
+    matchLabels:
+      app: myapp
+
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: myapp
+        ports:
+        - containerPort: 9000
 
   strategy:
     canary:
@@ -16,14 +32,6 @@ spec:
 
       canaryService: myapp-canary
       stableService: myapp-stable
-
-      stableMetadata:
-        labels:
-          version: stable
-
-      canaryMetadata:
-        labels:
-          version: canary
 
       trafficRouting:
         istio:
@@ -40,69 +48,10 @@ spec:
       - setWeight: 10
       - pause: { duration: 2m }
 
-      - analysis:
-          templates:
-          - templateName: myapp-analysis
-            args:
-            - name: service-name
-              value: myapp
-
       - setWeight: 30
       - pause: { duration: 2m }
-
-      - analysis:
-          templates:
-          - templateName: myapp-analysis
-            args:
-            - name: service-name
-              value: myapp
 
       - setWeight: 60
       - pause: { duration: 2m }
 
-      - analysis:
-          templates:
-          - templateName: myapp-analysis
-            args:
-            - name: service-name
-              value: myapp
-
       - setWeight: 100
-
-  selector:
-    matchLabels:
-      app: myapp
-
-  template:
-    metadata:
-      labels:
-        app: myapp
-        version: canary
-    spec:
-      containers:
-      - name: myapp
-        image: myapp
-        ports:
-        - containerPort: 9000
-
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 9000
-          initialDelaySeconds: 5
-          periodSeconds: 10
-
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 9000
-          initialDelaySeconds: 10
-          periodSeconds: 20
-
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
