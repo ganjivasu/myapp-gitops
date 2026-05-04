@@ -47,9 +47,5 @@ fi
 git add kustomization.yaml
 git commit -m "Promote $IMAGE to $ENV"
 
-# Only push if there are commits (safest in CI)
-if ! git diff --cached --quiet; then
-  git push origin main
-else
-  echo "ℹ️ No changes to push for $ENV"
-fi
+TARGET_BRANCH="${GITOPS_TARGET_BRANCH:-main}"
+git push origin "HEAD:refs/heads/${TARGET_BRANCH}"

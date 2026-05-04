@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/ganjivasu/myapp-gitops
-    targetRevision: main
+    targetRevision: ai-experiments
     path: myapp/overlays/pt
   destination:
     server: https://kubernetes.default.svc
