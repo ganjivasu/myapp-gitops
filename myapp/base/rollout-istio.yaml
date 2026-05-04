@@ -14,8 +14,8 @@ spec:
       maxUnavailable: 1
       abortScaleDownDelaySeconds: 30
 
-      canaryService: myapp
-      stableService: myapp
+      canaryService: myapp-canary
+      stableService: myapp-stable
 
       stableMetadata:
         labels:
