@@ -8,7 +8,7 @@ resources:
 images:
   - name: myapp
     newName: 281762848319.dkr.ecr.us-east-1.amazonaws.com/myapp
-    digest: sha256:7dc4e721289d7ca37f3ca7b40af986ec13801c5049e98b5d4bb05fe8c69bd3c0
+    digest: sha256:96de2ace8b5a47c66ab7f5f6fc81942cf762ab2be32cdccb39c140bc6ee47176
 patches:
   - target:
       kind: Rollout
